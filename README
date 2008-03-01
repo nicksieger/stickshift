@@ -4,7 +4,9 @@ Stickshift is a simple, manual-instrumenting call-tree profiler in as few lines 
 
 == Concept
 
-The idea is to be as minimally intrusive as possible, but also to be quite dumb and manual. You tell stickshift to only instrument the methods you want, and it measures time spent in that method, as well as any time spent in any instrumented methods invoked by the method. After leaving the top-most method, a call tree with timings is dumped to $stdout.
+The idea is to be as minimally intrusive as possible, but also to be quite dumb and manual. You tell stickshift to only
+instrument the methods you want, and it measures time spent in that method, as well as any time spent in any instrumented
+methods invoked by the method. After leaving the top-most method, a call tree with timings is dumped to $stdout.
 
 == Example
 
