@@ -1,15 +1,5 @@
 require 'benchmark'
 
-# Stickshift is just a simple, manual-instrumenting call-tree profiler in as few lines of code as possible.
-#
-# Example:
-#     require 'stickshift'
-#     Array.instrument :<<
-#     arr = Array.new
-#     arr << 1
-#     # => 0ms >  Array#<< < 0ms
-#
-# Warning: Be careful, don't instrument methods on Benchmark or String, or you will generate a recursive loop!
 module Stickshift
   class Timer
     def self.current
@@ -26,8 +16,8 @@ module Stickshift
       @depth = 1
       @elapsed = 0
       @options = options
-      if @options[:as]
-        @label = @options[:as]
+      if @options[:label]
+        @label = @options[:label]
       else
         klass = Class === obj ? "#{obj.name}." : "#{obj.class.name}#"
         @label = "#{klass}#{meth}"
@@ -92,18 +82,14 @@ module Stickshift
     end
 
     def args
-      if @options[:with]
-        "(#{@args[@options[:with]].inspect})"
+      if @options[:with_args]
+        "(#{@args[@options[:with_args]].inspect})"
       end
     end
   end
 end
 
 class Module
-  # Instrument the given methods on instances of this class.
-  # Optionally, the last argument can be an options hash specifying additional behavior:
-  # * :as => "label" gives the instrumented method a custom label.
-  # * :with => 0 causes the first argument to the method to be included in the label. Ranges can also be used.
   def instrument(*meths)
     options = Hash === meths.last ? meths.pop : {}
     @__stickshift ||= {}
@@ -126,12 +112,10 @@ class Module
     end
   end
 
-  # Is this method currently instrumented?
   def instrumented?(meth)
     instance_methods.include?("#{_stickshift_mangle(meth)}__instrumented")
   end
 
-  # Uninstrument the given methods
   def uninstrument(*meths)
     meths.each do |meth|
       if instrumented?(meth)
@@ -142,7 +126,6 @@ class Module
     end
   end
 
-  # Uninstrument (turn off) all instrumented methods in this class or module
   def uninstrument_all
     uninstrument(*(instance_methods.select {|m| m =~ /__instrumented$/}.map {|m| @__stickshift[m[0...-14]][:original]}))
   end

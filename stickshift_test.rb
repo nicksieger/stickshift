@@ -62,7 +62,7 @@ class StickshiftTest < Test::Unit::TestCase
 
   def test_custom_label
     capture
-    Foo.instrument :hello, :as => "Hello World!"
+    Foo.instrument :hello, :label => "Hello World!"
     Foo.new.hello
     assert @stdout.string =~ /Hello World!/
   end
@@ -82,7 +82,7 @@ class StickshiftTest < Test::Unit::TestCase
 
   def test_instrument_with_first_arg
     capture
-    Bar.instrument :call, :with => 0
+    Bar.instrument :call, :with_args => 0
     Bar.new.call("abc")
     Bar.new.call("def")
     assert @stdout.string =~ /call.*"abc"/

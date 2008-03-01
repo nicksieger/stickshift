@@ -11,5 +11,5 @@ task :default => :sleep
 
 require 'stickshift'
 ::Rake::Application.instrument :top_level
-::Rake::Application.instrument :[], :with => 0
+::Rake::Application.instrument :[], :with_args => 0
 ::Rake::Task.instrument :invoke, :execute, :inspect_self => true
