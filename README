@@ -1,0 +1,35 @@
+= Stickshift
+
+Stickshift is a simple, manual-instrumenting call-tree profiler in as few lines of code as possible.
+
+== Concept
+
+The idea is to be as minimally intrusive as possible, but also to be quite dumb and manual. You tell stickshift to only instrument the methods you want, and it measures time spent in that method, as well as any time spent in any instrumented methods invoked by the method. After leaving the top-most method, a call tree with timings is dumped to $stdout.
+
+== Example
+
+Consider the following Rakefile:
+
+    task :sleep => :snooze do
+      sleep 1
+    end
+    task :snooze do
+      sleep 2
+    end
+    task :default => :sleep
+
+    require 'stickshift'
+    ::Rake::Application.instrument :top_level
+    ::Rake::Application.instrument :[], :with => 0
+    ::Rake::Task.instrument :invoke, :execute, :inspect_self => true
+
+Running 'rake' will produce the following output:
+
+       0ms >  Rake::Application#top_level < 3001ms
+       0ms >    Rake::Application#[]("default") < 0ms
+       0ms >    Rake::Task#invoke{<Rake::Task default => [sleep]>} < 3001ms
+       0ms >      Rake::Application#[]("sleep") < 0ms
+       0ms >      Rake::Application#[]("snooze") < 0ms
+    2000ms >      Rake::Task#execute{<Rake::Task snooze => []>} < 2000ms
+    1000ms >      Rake::Task#execute{<Rake::Task sleep => [snooze]>} < 1000ms
+       0ms >      Rake::Task#execute{<Rake::Task default => [sleep]>} < 0ms
