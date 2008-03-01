@@ -47,7 +47,8 @@ along the left, while method total time is at the end of each line.
 
 == Instrumentation
 
-Stickshift adds a method named #instrument to the Module class that instruments methods in the receiver module or class.
+Stickshift adds a method named #instrument to the Module class that instruments
+methods in the receiver module or class.
 
 It accepts one or more method names, and an optional trailing hash of options:
 
@@ -57,3 +58,6 @@ It accepts one or more method names, and an optional trailing hash of options:
   the label. Ranges can also be used.
 * :inspect_self => true causes the inspected object to be printed in the
   label.
+
+#uninstrument and #uninstrument_all methods are also available if you wish to
+disable instrumentation.
