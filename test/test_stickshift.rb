@@ -4,7 +4,7 @@ require 'stickshift'
 
 class Foo
   def slow_method
-    sleep 0.5
+    sleep 0.1
   end
   def hello
   end
