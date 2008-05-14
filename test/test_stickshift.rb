@@ -33,6 +33,7 @@ class StickshiftTest < Test::Unit::TestCase
   def capture
     @save = $stdout
     @stdout = $stdout = StringIO.new
+    @out = nil
   end
   
   def teardown
@@ -42,6 +43,7 @@ class StickshiftTest < Test::Unit::TestCase
     String.uninstrument_all
     $stdout = @save if @save
     puts @out if @out
+    Stickshift.top_level_trigger = nil
   end
 
   def test_formatting
@@ -55,9 +57,9 @@ class StickshiftTest < Test::Unit::TestCase
     Foo.instrument :slow_method
     capture
     Bar.new.slow_method
-    @out = @stdout.string
-    assert @out =~ /Bar#slow_method/
-    assert @out =~ /Foo#slow_method/
+    out = @stdout.string
+    assert out =~ /Bar#slow_method/
+    assert out =~ /Foo#slow_method/
   end
 
   def test_custom_label
@@ -101,5 +103,27 @@ class StickshiftTest < Test::Unit::TestCase
     Array.instrument :length, :inspect_self => true
     %w(a b c).length
     assert @stdout.string =~ /"a", "b", "c"/
+  end
+
+  def test_output_only_when_triggered_by_top_level_method
+    capture
+    Foo.instrument :slow_method
+    Bar.instrument :slow_method
+    Bar.new.slow_method
+
+    assert !@stdout.string.empty?
+    expected = @stdout.string
+    @stdout.reopen(StringIO.new)
+    assert @stdout.string.empty?
+
+    Bar.uninstrument :slow_method
+    Bar.instrument :slow_method, :top_level => true
+    assert Stickshift.top_level_trigger
+
+    Foo.new.slow_method
+    assert @stdout.string.empty?
+
+    Bar.new.slow_method
+    assert_equal expected, @stdout.string
   end
 end

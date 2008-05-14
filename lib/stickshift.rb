@@ -1,6 +1,7 @@
 require 'benchmark'
 
 module Stickshift
+  class << self; attr_accessor :top_level_trigger; end
   class Timer
     def self.current;         Thread.current['__stickshift']; end
     def self.current=(timer); Thread.current['__stickshift'] = timer; end
@@ -22,16 +23,23 @@ module Stickshift
       end
     end
 
+    def enabled?
+       Timer.current || Stickshift.top_level_trigger.nil? || @options[:top_level]
+    end
+
     def invoke(&block)
-      Timer.current = self
-      result = nil
-      @elapsed = Benchmark.realtime do
-        result = block.call
+      return block.call unless enabled?
+      begin
+        Timer.current = self
+        result = nil
+        @elapsed = Benchmark.realtime do
+          result = block.call
+        end
+        result
+      ensure
+        Timer.current = @parent
+        report unless @parent
       end
-      result
-    ensure
-      Timer.current = @parent
-      report unless @parent
     end
 
     def add(child)
@@ -73,6 +81,7 @@ end
 class Module
   def instrument(*meths)
     options = Hash === meths.last ? meths.pop : {}
+    Stickshift.top_level_trigger = true if options[:top_level]
     @__stickshift ||= {}
     meths.each do |meth|
       unless instrumented?(meth)
