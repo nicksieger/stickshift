@@ -1,5 +1,3 @@
-= Stickshift
-
 Stickshift is a simple, manual-instrumenting call-tree profiler in as few
 lines of code as possible.
 

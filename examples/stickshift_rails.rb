@@ -5,7 +5,7 @@
 require 'stickshift'
 require 'dispatcher'
 
-class << Dispatcher; instrument :dispatch, :label => "Rails Dispatcher"; end
+class << Dispatcher; instrument :dispatch, :label => "Rails Dispatcher", :top_level => true; end
 class << ActionController::Base; instrument :process; end
 ActionController::Base.instrument :perform_action
 ActionController::Base.instance_methods.select {|m| m =~ /^render/ }.each do |m|
