@@ -1,7 +1,10 @@
 require 'benchmark'
 
 module Stickshift
-  class << self; attr_accessor :top_level_trigger; end
+  class << self; attr_accessor :enabled, :top_level_trigger, :output; end
+  @enabled = true
+  @output = $stdout
+
   class Timer
     def self.current;         Thread.current['__stickshift']; end
     def self.current=(timer); Thread.current['__stickshift'] = timer; end
@@ -24,7 +27,7 @@ module Stickshift
     end
 
     def enabled?
-       Timer.current || Stickshift.top_level_trigger.nil? || @options[:top_level]
+     Stickshift.enabled && (Timer.current || Stickshift.top_level_trigger.nil? || @options[:top_level])
     end
 
     def invoke(&block)
@@ -55,7 +58,7 @@ module Stickshift
     end
 
     def report
-      $stdout.puts "#{self_format % self_time}ms >#{'  ' * @depth}#{@label} < #{total_time}ms"
+      Stickshift.output.puts "#{self_format % self_time}ms >#{'  ' * @depth}#{@label} < #{total_time}ms"
       children.each {|c| c.report}
     end
 
