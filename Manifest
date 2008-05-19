@@ -1,11 +1,11 @@
-History.txt
-Manifest.txt
-README.txt
-LICENSE.txt
-Rakefile
 examples/example.rake
 examples/stickshift_rails.rb
-lib/stickshift
+History.txt
 lib/stickshift/version.rb
 lib/stickshift.rb
+LICENSE.txt
+Manifest
+Rakefile
+README.markdown
+stickshift.gemspec
 test/test_stickshift.rb

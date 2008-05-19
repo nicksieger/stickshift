@@ -1,7 +1,7 @@
 Stickshift is a simple, manual-instrumenting call-tree profiler in as few
 lines of code as possible.
 
-== Background
+## Background
 
 The idea is to be as minimally intrusive as possible, but also to be stupid
 simple and manual. You tell stickshift to only instrument the methods you
@@ -14,7 +14,7 @@ any object's #inspect method, or you will generate a recursive loop! For
 fine-grained profiling on any arbitrary class, use profiler or ruby-prof
 instead.
 
-== Example
+## Example
 
 Consider the following Rakefile:
 
@@ -43,19 +43,27 @@ along the left, while method total time is at the end of each line.
     1000ms >      Rake::Task#execute{<Rake::Task sleep => [snooze]>} < 1000ms
        0ms >      Rake::Task#execute{<Rake::Task default => [sleep]>} < 0ms
 
-== Instrumentation
+## Instrumentation
 
 Stickshift adds a method named #instrument to the Module class that instruments
 methods in the receiver module or class.
 
 It accepts one or more method names, and an optional trailing hash of options:
 
-* :label => "label" gives the instrumented method a custom label instead of
+* `:label => "label"` gives the instrumented method a custom label instead of
   the default "Class#method" label.
-* :with_args => 0 causes the first argument to the method to be included in
+* `:with_args => 0` causes the first argument to the method to be included in
   the label. Ranges can also be used.
-* :inspect_self => true causes the inspected object to be printed in the
+* `:inspect_self => true` causes the inspected object to be printed in the
   label.
+* `:top_level => true` causes Stickshift to only be activated after passing
+  through this method. If any other non-top-level instrumented method is called 
+  outside of a top-level method, it will not be timed or reported.
 
-#uninstrument and #uninstrument_all methods are also available if you wish to
+`#uninstrument` and `#uninstrument_all` methods are also available if you wish to
 disable instrumentation.
+
+## Capture/Settings
+
+* `Stickshift.enabled` (default `true`) controls whether Stickshift is on or not.
+* `Stickshift.output` (default `$stdout`) controls where output is written. The object must respond to `#puts(*lines)`.
