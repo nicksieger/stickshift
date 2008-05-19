@@ -4,10 +4,20 @@
 
 require 'stickshift'
 require 'dispatcher'
+require 'action_controller'
 
 class << Dispatcher; instrument :dispatch, :label => "Rails Dispatcher", :top_level => true; end
 class << ActionController::Base; instrument :process; end
-ActionController::Base.instrument :perform_action
+ActionController::Base.instrument :default_render, :respond_to
+ActionController::Base.instance_methods.select {|m| m =~ /^(process|perform_action)/ }.each do |m|
+  ActionController::Base.instrument m
+end
+ActionController::Base.private_instance_methods.select {|m| m =~ /^(process|perform_action)/ }.each do |m|
+  ActionController::Base.instrument m
+end
+ObjectSpace.each_object(Class) do |klazz|
+  klazz.instrument :run, :call, :inspect_self => true if klazz < ActionController::Filters::ClassMethods::Filter
+end
 ActionController::Base.instance_methods.select {|m| m =~ /^render/ }.each do |m|
   ActionController::Base.instrument m, :with_args => 0
 end
