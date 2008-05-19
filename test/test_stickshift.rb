@@ -31,8 +31,7 @@ end
 
 class StickshiftTest < Test::Unit::TestCase
   def capture
-    @save = $stdout
-    @stdout = $stdout = StringIO.new
+    Stickshift.output = @stdout = StringIO.new
     @out = nil
   end
   
@@ -41,9 +40,9 @@ class StickshiftTest < Test::Unit::TestCase
     Bar.uninstrument_all
     Array.uninstrument_all
     String.uninstrument_all
-    $stdout = @save if @save
     puts @out if @out
     Stickshift.top_level_trigger = nil
+    Stickshift.output = $stdout
   end
 
   def test_formatting
