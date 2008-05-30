@@ -6,7 +6,7 @@ Gem::Specification.new do |s|
 
   s.required_rubygems_version = Gem::Requirement.new(">= 0") if s.respond_to? :required_rubygems_version=
   s.authors = ["Nick Sieger"]
-  s.date = %q{2008-05-19}
+  s.date = %q{2008-05-30}
   s.description = %q{Stickshift is a simple, manual-instrumenting call-tree profiler in as few lines of code as possible.}
   s.email = %q{nick@nicksieger.com}
   s.extra_rdoc_files = ["lib/stickshift/version.rb", "lib/stickshift.rb", "LICENSE.txt", "README.markdown"]

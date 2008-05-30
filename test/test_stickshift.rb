@@ -123,6 +123,6 @@ class StickshiftTest < Test::Unit::TestCase
     assert @stdout.string.empty?
 
     Bar.new.slow_method
-    assert_equal expected, @stdout.string
+    assert @stdout.string =~ /Bar#slow_method.*Foo#slow_method/m
   end
 end
