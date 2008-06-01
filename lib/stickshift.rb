@@ -106,7 +106,7 @@ class Module
   end
 
   def instrumented?(meth)
-    instance_methods.include?("#{__stickshift_mangle(meth)}__instrumented")
+    meth =~ /__instrumented$/ || instance_methods.include?("#{__stickshift_mangle(meth)}__instrumented")
   end
 
   def uninstrument(*meths)

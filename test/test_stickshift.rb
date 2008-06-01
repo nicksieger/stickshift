@@ -125,4 +125,17 @@ class StickshiftTest < Test::Unit::TestCase
     Bar.new.slow_method
     assert @stdout.string =~ /Bar#slow_method.*Foo#slow_method/m
   end
+
+  def instrumented_name(meth)
+    Module.__stickshift_mangle(meth) + '__instrumented'
+  end
+
+  def test_cannot_instrument_instrumented_methods
+    Foo.instrument :slow_method
+    assert Foo.instrumented?(:slow_method)
+    instrumented = instrumented_name(:slow_method)
+    assert Foo.instance_methods.include?(instrumented)
+    Foo.instrument instrumented
+    assert !Foo.instance_methods.include?(instrumented_name(instrumented))
+  end
 end
