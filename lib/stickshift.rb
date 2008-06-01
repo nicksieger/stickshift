@@ -105,8 +105,11 @@ class Module
     end
   end
 
+  RESTRICTED = %w(inspect __send__ __id__)
+
   def instrumented?(meth)
-    meth =~ /__instrumented$/ || instance_methods.include?("#{__stickshift_mangle(meth)}__instrumented")
+    RESTRICTED.include?(meth.to_s) || meth =~ /__instrumented$/ ||
+      instance_methods.include?("#{__stickshift_mangle(meth)}__instrumented")
   end
 
   def uninstrument(*meths)

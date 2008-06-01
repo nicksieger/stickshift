@@ -138,4 +138,11 @@ class StickshiftTest < Test::Unit::TestCase
     Foo.instrument instrumented
     assert !Foo.instance_methods.include?(instrumented_name(instrumented))
   end
+
+  def test_cannot_instrument_restricted_methods
+    [:inspect, :__send__, :__id__].each do |m|
+      Foo.instrument m
+      assert !Foo.instance_methods.include?(instrumented_name(m))
+    end
+  end
 end
