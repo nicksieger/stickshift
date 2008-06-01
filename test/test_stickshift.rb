@@ -29,7 +29,16 @@ class Bar
   end
 end
 
+module TestHelper
+  def instrumented_name(meth)
+    Module.__stickshift_mangle(meth) + '__instrumented'
+  end
+  module_function :instrumented_name
+end
+
 class StickshiftTest < Test::Unit::TestCase
+  include TestHelper
+
   def capture
     Stickshift.output = @stdout = StringIO.new
     @out = nil
@@ -126,10 +135,6 @@ class StickshiftTest < Test::Unit::TestCase
     assert @stdout.string =~ /Bar#slow_method.*Foo#slow_method/m
   end
 
-  def instrumented_name(meth)
-    Module.__stickshift_mangle(meth) + '__instrumented'
-  end
-
   def test_cannot_instrument_instrumented_methods
     Foo.instrument :slow_method
     assert Foo.instrumented?(:slow_method)
@@ -143,6 +148,15 @@ class StickshiftTest < Test::Unit::TestCase
     [:inspect, :__send__, :__id__].each do |m|
       Foo.instrument m
       assert !Foo.instance_methods.include?(instrumented_name(m))
+    end
+  end
+
+  def test_cannot_instrument_string_or_benchmark_methods
+    String.instrument :to_s
+    assert !String.instance_methods.include?(instrumented_name(:to_s))
+    assert ! class << Benchmark;
+      instrument :realtime
+      self.instance_methods.include?(TestHelper::instrumented_name(:realtime))
     end
   end
 end

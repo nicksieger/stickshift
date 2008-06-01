@@ -105,10 +105,13 @@ class Module
     end
   end
 
-  RESTRICTED = %w(inspect __send__ __id__)
+  RESTRICTED_CLASSES = [String, (class << Benchmark; self; end), Benchmark]
+  RESTRICTED_METHODS = %w(inspect __send__ __id__)
 
   def instrumented?(meth)
-    RESTRICTED.include?(meth.to_s) || meth =~ /__instrumented$/ ||
+    RESTRICTED_CLASSES.include?(self) ||
+      RESTRICTED_METHODS.include?(meth.to_s) ||
+      meth =~ /__instrumented$/ ||
       instance_methods.include?("#{__stickshift_mangle(meth)}__instrumented")
   end
 
