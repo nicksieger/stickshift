@@ -1,5 +1,3 @@
-require 'benchmark'
-
 module Stickshift
   class << self; attr_accessor :enabled, :top_level_trigger, :output; end
   @enabled = true
@@ -35,7 +33,7 @@ module Stickshift
       begin
         Timer.current = self
         result = nil
-        @elapsed = Benchmark.realtime do
+        @elapsed = realtime do
           result = block.call
         end
         result
@@ -43,6 +41,12 @@ module Stickshift
         Timer.current = @parent
         report unless @parent
       end
+    end
+
+    def realtime
+      start = Time.now
+      yield
+      Time.now - start
     end
 
     def add(child)
@@ -63,16 +67,20 @@ module Stickshift
     end
 
     def ms(t)
-      (t * 1000).to_i
+      (t * 1000)
     end
 
     def self_format
-      @self_format ||= @parent.self_format if @parent
-      @self_format ||= "%#{total_time.to_s.length}s"
+      @self_format ||= if @parent
+        @parent.self_format
+      else
+        width = ("%0.2f" % total_time).length
+        "%#{width}.2f"
+      end
     end
 
     def self_time
-      @self_time ||= ms(elapsed - children.inject(0) {|sum,el| sum += el.elapsed}).to_s
+      @self_time ||= ms(elapsed - children.inject(0) {|sum,el| sum += el.elapsed})
     end
 
     def total_time
@@ -105,7 +113,7 @@ class Module
     end
   end
 
-  RESTRICTED_CLASSES = [String, (class << Benchmark; self; end), Benchmark]
+  RESTRICTED_CLASSES = [String]
   RESTRICTED_METHODS = %w(inspect __send__ __id__)
 
   def instrumented?(meth)

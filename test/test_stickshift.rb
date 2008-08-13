@@ -154,9 +154,5 @@ class StickshiftTest < Test::Unit::TestCase
   def test_cannot_instrument_string_or_benchmark_methods
     String.instrument :to_s
     assert !String.instance_methods.include?(instrumented_name(:to_s))
-    assert ! class << Benchmark;
-      instrument :realtime
-      self.instance_methods.include?(TestHelper::instrumented_name(:realtime))
-    end
   end
 end
