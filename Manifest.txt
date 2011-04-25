@@ -4,7 +4,7 @@ History.txt
 lib/stickshift/version.rb
 lib/stickshift.rb
 LICENSE.txt
-Manifest
+Manifest.txt
 Rakefile
 README.markdown
 stickshift.gemspec
