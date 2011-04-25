@@ -10,10 +10,11 @@ as any time spent in any instrumented methods invoked by the method.
 After leaving the top-most method, a call tree with timings is dumped
 to $stdout.
 
-Note: You aren't allowed to instrument methods on the String class, or any
-object's #inspect method, because it can generate a recursive loop! For
-#fine-grained profiling on any arbitrary class, use profiler or ruby-prof
-instead. You're also not allowed to instrument an instrumented method.
+Note: You aren't allowed to instrument methods on the String class, or
+any object's #inspect method, because it can generate a recursive
+loop! For fine-grained profiling on any arbitrary class, use profiler
+or ruby-prof instead. You're also not allowed to instrument an
+instrumented method.
 
 ## Example
 
