@@ -1,5 +1,8 @@
 module Stickshift
-  class << self; attr_accessor :enabled, :top_level_trigger, :output; end
+  class << self
+    attr_accessor :enabled, :top_level_trigger, :output
+    alias_method :enabled?, :enabled
+  end
   @enabled = true
   @output = $stdout
 

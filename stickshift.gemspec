@@ -2,11 +2,11 @@
 
 Gem::Specification.new do |s|
   s.name = %q{stickshift}
-  s.version = "0.1"
+  s.version = "1.0.0"
 
   s.required_rubygems_version = Gem::Requirement.new(">= 0") if s.respond_to? :required_rubygems_version=
   s.authors = ["Nick Sieger"]
-  s.date = %q{2011-04-25}
+  s.date = %q{2011-08-03}
   s.description = %q{Stickshift is a simple, manual-instrumenting call-tree profiler in as few lines of code as possible.}
   s.email = %q{nick@nicksieger.com}
   s.extra_rdoc_files = ["History.txt", "LICENSE.txt", "Manifest.txt"]
@@ -24,13 +24,13 @@ Gem::Specification.new do |s|
 
     if Gem::Version.new(Gem::VERSION) >= Gem::Version.new('1.2.0') then
       s.add_development_dependency(%q<rubyforge>, [">= 2.0.4"])
-      s.add_development_dependency(%q<hoe>, [">= 2.9.4"])
+      s.add_development_dependency(%q<hoe>, ["~> 2.10"])
     else
       s.add_dependency(%q<rubyforge>, [">= 2.0.4"])
-      s.add_dependency(%q<hoe>, [">= 2.9.4"])
+      s.add_dependency(%q<hoe>, ["~> 2.10"])
     end
   else
     s.add_dependency(%q<rubyforge>, [">= 2.0.4"])
-    s.add_dependency(%q<hoe>, [">= 2.9.4"])
+    s.add_dependency(%q<hoe>, ["~> 2.10"])
   end
 end
